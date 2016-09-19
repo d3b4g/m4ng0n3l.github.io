@@ -1186,4 +1186,138 @@ www.7ms.us
 root@kali:/media/veracrypt1# -
 {% endhighlight %}
 
+## Final Cleanup - Eric's Backdoor Removals
+
+Ok so what did Eric accomplish on this box that should be removed.  Well frankly a ton, in a real world scenario I would be concerned with missing things like rootkits on the box and would probably just suggest backing up protected documents and reinstalling.  But lets ignore that.
+
+* User account to be removed - Eric
+* SSH backdoor on 1974
+* Privilege escalation binary
+* FTP server Breach
+* Web Server Defacement on TCP/80
+* Honeypot on TCP/23
+* Honeypot on TCP/69
+* Cleanup of /etc/rc.local
+* Hacking tools in /opt
+* GPG keys compromised
+
+### Malicious User Removal
+
+First things first, malicious user `eric` should be removed from the system.  Note, this command will delete all files in the home directory as well, if you wish to preserve -r would be appropriate.
+
+{% highlight bash %}
+root@BM:~# userdel eric -r
+{% endhighlight %}
+
+### SSH Backdoor Removal
+
+Malicious script /root/ssh/canyoussh.sh must be removed along with its crontab entry.
+
+{% highlight bash %}
+root@BM:~# cat ssh/canyoussh.sh
+NOW=$(date +"%Y-%m-%d-%H-%M-%S")
+if grep -w "My kid will be a soccer player" /home/WeaselLaugh/*; then
+   sudo iptables -A INPUT -p tcp --dport 1974 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+   echo $NOW > /home/WeaselLaugh/ebd.txt
+   echo Erics backdoor is currently OPEN >> /home/WeaselLaugh/ebd.txt
+ fi
+root@BM:~# -
+{% endhighlight %}
+
+{% highlight bash %}
+*/1 * * * * /root/ssh/canyoussh.sh
+{% endhighlight %}
+
+As the service running this SSH server is the actual sshd daemon, editing of /etc/ssh/sshd_config and restoring port to 22 would be recommended.  However something is listening on port 22.
+{% highlight bash %}
+root@BM:~# netstat -tupln | grep 22
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      3957/python2    
+root@BM:~# netstat -tupln | grep 1974
+tcp        0      0 0.0.0.0:1974            0.0.0.0:*               LISTEN      3907/sshd       
+tcp6       0      0 :::1974                 :::*                    LISTEN      3907/sshd       
+root@BM:~# -
+{% endhighlight %}
+
+Looking in /root there is a ssh.sh script.
+
+{% highlight bash %}
+python2 /opt/rg/rubberglue.py 22
+{% endhighlight %}
+
+So its a script called `rubberglue`, interesting.  What it seems to do is take any connection to the bound port and connect back to the source ip address on the same port.  I like it!  Either way, removal of this script and the `/opt/rg` directory would be necessary.  Now if this was intentional then keeping all of this would be appropriate and just changing the port would be advised.
+
+### Privilege escalation binary
+
+Removal of `/usr/local/share/sgml/donpcgd` would be recommended.  Or at least removal of SUID.
+
+{% highlight bash %}
+chmod u-s /usr/local/share/sgml/donpcgd
+{% endhighlight %}
+
+{% highlight bash %}
+rm /usr/local/share/sgml/donpcgd
+{% endhighlight %}
+
+### FTP Knock Routine
+
+Modification of the knock would be appropriate as it was compromised.  This can be accomplished by editing `/etc/knockd.conf`.
+
+Cleanup of `/opt/coloradoftp-prime/home` would also be recommended and removal of the malicious/defaced files contained within.
+
+### Web Server Defacement on TCP/80
+
+Restoration of the apache web server would be recommend, or removal.  Web directory was `/var/www/html`.
+
+### Honeypot on TCP/23
+
+Honeypot removal would be recommend unless it was intended.  Removal could be done by removing the `/opt/honeyports` directory, `/root/checkban` and `/root/telnet.sh` scripts.
+
+{% highlight bash %}
+rm -r /opt/honeyports
+rm -r /root/checkban
+rm /root/telnet.sh
+{% endhighlight %}
+
+
+Removal of the following line from the root crontab would also be required:
+
+{% highlight bash %}
+*/10 * * * * /root/telnet.sh
+{% endhighlight %}
+
+### Honeypot on TCP/23
+
+The Wordpress installation on TCP/69 was indeed a honeypot.  Cleanup would involve deletion of `/root/wp.sh` and removal of `/opt/wp`.
+
+{% highlight bash %}
+rm -r /opt/wp
+rm /root/wp.sh
+{% endhighlight %}
+
+### Cleanup of /etc/rc.local
+
+Rc.local seems to have been compromised as well, removal of all malicious scripts should be performed.
+
+{% highlight bash %}
+/root/ebd.sh
+/root/cleanup.sh &
+/root/fwconfig.sh &
+/root/email.sh &
+/root/wp.sh &
+/root/ftp.sh &
+/root/telnet.sh &
+/root/ssh.sh &
+{% endhighlight %}
+
+### Hacking tools in /opt
+
+Some interesting hacking tools/tips were also found in `/opt/bpatty`, `/opt/Sn1pr` `/opt/reconng`, all of which should be carefully backed up for later use :) and removal.
+
+
+### GPG keys compromised
+
+Lastly, as root was compromised, the GPG keys contained in /root/.gnupg should be considered compromised and removed.
+
+## Final Thoughts
+
 Overall, this was a great challenge!  I learned a couple valuable lessons during the course of breaking in and it gave me some ideas for some script updates to do.  Overall great theming of the whole thing, I really appreciated that.  Off to break more things!
