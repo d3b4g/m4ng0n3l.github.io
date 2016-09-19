@@ -37,7 +37,7 @@ root@kali:~# -
 
 Excellent, `192.168.244.157` it is.
 
-## Enumeration
+## Enumeration/Port Mapping
 
 First off, trusty nmap against all TCP ports( -p 0-65535) and Service Detection (-sv):
 
@@ -94,7 +94,7 @@ root@kali:~/evidence/billymadison1.0# -
 
 Some interesting results there, 2 services that were not able to be ID'd, HTTP on two ports, telnet, ssh, and smb.
 
-## TCP/80 - HTTP (Apache)
+## TCP/80 - HTTP (Apache) - Round 1
 
 I decided to go for HTTP next and pulled up the page to find a defaced website.  The source for the page was as follows:
 
@@ -135,7 +135,7 @@ your final paper before time runs out and you FAAAAIIIILLLLL?????</h2>
 
 I then proceeded to download all the images, check them with exiftool and binwalk to see if anything was hidden.  Nothing of interest here sadly.
 
-## TCP/69 - HTTP (BaseHTTPServer)
+## TCP/69 - HTTP (BaseHTTPServer) - Funny Wordpress Installation
 
 Next up HTTP on port 69.  This contained what appeared to be a Wordpress site, quick inspection indicated that there was something amiss, links did not appear to work outside of login, the login page was not in the standard location, and searching was completely broken.  At this point I'm thinking honeypot, and considering the service shows up as BaseHTTPServer which I recall being python's SimpleHTTPServer it seems probable, but lets be thorough with wpscan:
 
@@ -194,7 +194,7 @@ No plugins, just one theme.  I also re-ran it with --enumerate u and got nothing
 
 Attempting to connect to 22 instantly returned a rejection message stating keys were required.  Nothing to see here.
 
-## TCP/23 - Telnet
+## TCP/23 - Telnet - Or is it?
 
 Attempting to connect to 23 returns a slightly odd error:
 
@@ -267,7 +267,7 @@ root@kali:~/evidence/billymadison1.0# -
 
 Ok, Nothing really jumped out there sadly, but I'll save those off for later use if needed.
 
-## TCP/80 - HTTP
+## TCP/80 - HTTP - Round 2!
 
 I was at a bit of a loss at this point, so I proceeded to use some other enumeration tools including nikto, dirbuster, and zap.   Sadly none of then bore any really good fruit.
 
@@ -346,11 +346,11 @@ root@kali:~/evidence/billymadison1.0# -
 
 This reduced my potential passwords down from 14 million to a manageable 733.  Sadly I still had no locations to attempt to log in to (other than the fake WordPress) so I moved onto the `.captured` clue.  Unfortunately my first attempts to find the file ended in failure, so I decided to look elsewhere. (Silly typos)
 
-## TCP/2525 - SMTP
+## TCP/2525 - SMTP -
 
 SMTP identified as `220 BM ESMTP SubEthaSMTP null`.  A bit of research came up with it was a Java library.  I attempted to use `VRFY` to identify emails but it all failed.  I then considered doing a client side attack and send veronica an email with a beef backdoor in case she was active and opening links (blondes...).  However this did not pan out, no links were clicked so I abandoned that idea.
 
-## TCP/443 - SMB
+## TCP/445 - SMB - Guest Mode
 
 I went ahead and enumerated SMB to see what could be found there:
 
