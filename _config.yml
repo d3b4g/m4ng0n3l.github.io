@@ -3,9 +3,9 @@
 # Site wide configuration
 ####################################
 #
-title: Leonids
+title: Duncan's Ramblings
 email:
-description: A simple and awesome blog theme powered by jekyll.
+description: InfoSec Professional
 url: # the base hostname & protocol for your site
 
 
@@ -14,7 +14,7 @@ url: # the base hostname & protocol for your site
 # Jekyll configuration
 ####################################
 #
-timezone:          Europe/Paris
+timezone:          UTC
 markdown:          kramdown
 highlighter:       rouge
 excerpt_separator: <!--more-->
@@ -33,10 +33,10 @@ kramdown:
 ####################################
 #
 owner:
-  name: Leonids
-  avatar: leonids-logo.png
-  job: "A jekyll theme"
-  bio: "A simple and awesome blog theme powered by jekyll."
+  name: "Duncan del Toro"
+  avatar: avatar.png
+  job: "The Ramblings of an InfoSec Professional"
+  bio: "Asundry InfoSec related topics and walkthroughs"
   email:
   disqus-shortname:
   twitter: #username
