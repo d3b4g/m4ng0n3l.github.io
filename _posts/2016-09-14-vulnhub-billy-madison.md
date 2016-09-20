@@ -1270,7 +1270,7 @@ Restoration of the apache web server would be recommend, or removal.  Web direct
 
 ### Honeypot on TCP/23
 
-Honeypot removal would be recommend unless it was intended.  Removal could be done by removing the `/opt/honeyports` directory, `/root/checkban` and `/root/telnet.sh` scripts.
+Telnet honeypot removal should be removed.  Removal could be done by removing the `/opt/honeyports` directory, `/root/checkban` and `/root/telnet.sh` scripts.
 
 {% highlight bash %}
 rm -r /opt/honeyports
@@ -1285,7 +1285,7 @@ Removal of the following line from the root crontab would also be required:
 */10 * * * * /root/telnet.sh
 {% endhighlight %}
 
-### Honeypot on TCP/23
+### Honeypot on TCP/69
 
 The Wordpress installation on TCP/69 was indeed a honeypot.  Cleanup would involve deletion of `/root/wp.sh` and removal of `/opt/wp`.
 
