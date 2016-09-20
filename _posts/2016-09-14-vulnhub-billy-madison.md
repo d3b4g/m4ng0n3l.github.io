@@ -1311,8 +1311,13 @@ Rc.local seems to have been compromised as well, removal of all malicious script
 
 ### Hacking tools in /opt
 
-Some interesting hacking tools/tips were also found in `/opt/bpatty`, `/opt/Sn1pr` `/opt/reconng`, all of which should be carefully backed up for later use :) and removal.
+Some interesting hacking tools/tips were also found in `/opt/bpatty`, `/opt/Sn1per` and `/opt/reconng`, all of which should be carefully backed up for later use :) and removal.
 
+`/opt/bpatty`  - Brian's Pentesting and Technical Tips for You - pretty neat collection of thoughs, a decent read.
+
+`/opt/Sn1per` - Scanner/Enumeration tool - Going to have to play around with this one, also available at https://github.com/1N3/Sn1per.
+
+`/opt/reconng` - Recon tool, great stuff, already included in Kali.
 
 ### GPG keys compromised
 
