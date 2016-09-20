@@ -4,9 +4,9 @@
 ####################################
 #
 title: Duncan's Ramblings
-email:
+email: duncan.deltoro@gmail.com
 description: InfoSec Professional
-url: # the base hostname & protocol for your site
+url: https://m4ng0n3l.github.io/
 
 
 #
@@ -37,7 +37,7 @@ owner:
   avatar: avatar.png
   job: "The Ramblings of an InfoSec Professional"
   bio: "Asundry InfoSec related topics and walkthroughs"
-  email:
+  email: duncan.deltoro@gmail.com
   disqus-shortname:
   twitter: #username
   facebook: #username
@@ -48,9 +48,9 @@ owner:
     ad-client:
     ad-slot:
   bing-verify:
-  github: #username
+  github: m4ng0n3l
   stackoverflow: #123456/username   from a "http://stackoverflow.com/users/123456/username" link
-  linkedin: #username
+  linkedin: duncandeltoro
   xing: #username
   instagram: #username
   lastfm: #username
