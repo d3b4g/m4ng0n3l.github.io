@@ -859,6 +859,8 @@ Ok, lets continue and do a bit more enumeration.  I have a couple of go-to scrip
 * [LinEnum.sh](http://www.rebootuser.com/?p=1758)
 * [linuxprivchecker.py](http://www.securitysift.com/download/linuxprivchecker.py)
 * [Linux_Exploit_Suggester.pl](https://github.com/PenturaLabs/Linux_Exploit_Suggester/blob/master/Linux_Exploit_Suggester.pl)
+* A great writeup on Privilege Escalation over at [blog.g0tmi1k.com](https://blog.g0tmi1k.com/2011/08/basic-linux-privilege-escalation/)
+* [kernel-exploits.com](https://www.kernel-exploits.com/)
 
 After a quick glance, I don't see anything particularly interesting in either of the enumeration scripts, and the Exploit Suggester came up empty.  I decide to check out the exploits found from searchsploit.
 
