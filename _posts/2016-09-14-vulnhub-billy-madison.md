@@ -1311,13 +1311,17 @@ Rc.local seems to have been compromised as well, removal of all malicious script
 
 ### Hacking tools in /opt
 
-Some interesting hacking tools/tips were also found in `/opt/bpatty`, `/opt/Sn1per` and `/opt/reconng`, all of which should be carefully backed up for later use :) and removal.
+Some interesting hacking tools/tips were also found in `/opt/bpatty`, `/opt/Sn1per` and `/opt/reconng`, all of which should be carefully backed up for later use :) and removal.  Also included below are a couple of the other pretty sweet scripts in `/opt`.
 
-`/opt/bpatty`  - Brian's Pentesting and Technical Tips for You - pretty neat collection of thoughs, a decent read.
+`/opt/bpatty`  - Brian's Pentesting and Technical Tips for You - pretty neat collection of thoughs, a decent read.  Available on [github](https://github.com/braimee/bpatty).
 
-`/opt/Sn1per` - Scanner/Enumeration tool - Going to have to play around with this one, also available at https://github.com/1N3/Sn1per.
+`/opt/Sn1per` - Scanner/Enumeration tool - Going to have to play around with this one, also available on [github](https://github.com/1N3/Sn1per).
 
-`/opt/reconng` - Recon tool, great stuff, already included in Kali.
+`/opt/reconng` - Recon tool, great stuff, already included in Kali but available on [BitBucket](https://bitbucket.org/LaNMaSteR53/recon-ng)
+
+`/opt/honeyports` - Port based Honeypot script.  Available on [github](https://github.com/securitygeneration/Honeyport)
+
+`/opt/rg` - RubberGlue Honeypot Available on [BitBucket](https://bitbucket.org/Zaeyx/rubberglue)
 
 ### GPG keys compromised
 
