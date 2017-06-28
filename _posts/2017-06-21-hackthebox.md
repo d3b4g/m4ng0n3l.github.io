@@ -6,7 +6,7 @@ categories: [training, htb]
 comments: false
 ---
 
-So a team member at work mentioned https://www.hackthebox.eu today, I mistook it for a project I had been following previously called http://root-the-box.com/.  But i decided to check it out and was quite pleasantly surprised.
+So a team member at work mentioned [https://www.hackthebox.eu](https://www.hackthebox.eu) today, I mistook it for a project I had been following previously called [http://root-the-box.com/](http://root-the-box.com/).  But i decided to check it out and was quite pleasantly surprised.
 
 To get an invite to hack the box you have to do an entry level attack against their website, while not completely trivial it wasn't a 10 second deal.  After a few minutes working the the problem I got my invite code and joined the 4,000 other folks who were attempting to Hack the Box!
 
