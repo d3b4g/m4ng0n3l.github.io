@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Hack the Box - Blue"
-date:   2016-09-14 15:07:19
+date:   2017-07-28 23:23:00
 categories: [walkthrough, htb]
 comments: false
 ---
