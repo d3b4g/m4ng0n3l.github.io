@@ -22,5 +22,5 @@ Logged On Users : 1
 Meterpreter     : x86/windows
 meterpreter > getuid
 Server username: NT AUTHORITY\SYSTEM
-meterpreter > shell
+meterpreter > 
 {% endhighlight %}

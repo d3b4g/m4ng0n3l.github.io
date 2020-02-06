@@ -10,3 +10,9 @@ comments: false
 An hard box by jkr.  Very cool box overall, really enjoyed both the initial compromise as well as the privesc.  
 
 As this box is still active the walkthrough is not available.
+
+{% highlight bash %}
+root@zetta:/var/lib/postgresql# whoami && hostname
+root
+zetta
+{% endhighlight %}
