@@ -20,7 +20,18 @@ layout: default
   {% endif %}
 </div><!-- /.image-wrap -->
 {% endif %}
+{% if page.featured-image %}
+<div class="post-image-feature">
+  <img class="feature-image" src=
+  {% if page.featured-image contains 'https' or page.featured-image contains 'http' %}
+  "{{ featured-image }}"
+  {% else %}
+  "{{ site.url }}/img/{{ featured-image }}"
+  {% endif %}
+  alt="{{ page.title }} feature image">
 
+</div><!-- /.image-wrap -->
+{% endif %}
 
 <div id="post">
   <header class="post-header">

@@ -5,7 +5,7 @@ date:   2020-02-04 00:00:00
 categories: [walkthrough, htb, oswe]
 comments: false
 featured-image: /img/htb/json.png
-featured-image-alt: "Hack the Box - JSON"
+featured-image-alt: "Banner-JSON"
 ---
 
 An medium box by Cyb3rb0b.  Oh how I had a hard time with the initial compromise on this one.  That being said while I found it rough it was a great learning experience.  Additionally, I found it really useful for studying for my OSWE since it let me do a bit of scripting.  
