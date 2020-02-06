@@ -5,7 +5,7 @@ date:   2020-02-03 00:00:00
 categories: [walkthrough, htb, oswe]
 comments: false
 ---
-![HTB-Bankrobber](/img/htb/Bankrobber.png)
+![HTB-Bankrobber](/img/htb/bankrobber.png)
 
 An hard box by  Gioo & Cneeliz.  One of my favorites to date.  A really, REALLY cool initial exploitation method on this one and a painful but rewarding shell experience.  The privesc was fun, although it did feel a bit CTF.   That being said this is a great box for OSWE preparation!  
 
