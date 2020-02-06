@@ -5,7 +5,7 @@ date:   2016-09-14 15:07:19
 categories: [walkthrough, htb]
 comments: false
 ---
-![HTB-Blue](/img/htb/blue/blue/png)
+![HTB-Blue](/img/htb/blue/blue.png)
 
 An easy box by ch4p.  Great for getting to know metasploit, or practice if you want to find and modify the exploit from exploit-db.com.
 
