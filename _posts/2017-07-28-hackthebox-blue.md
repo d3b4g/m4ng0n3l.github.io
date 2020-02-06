@@ -2,7 +2,7 @@
 layout: post
 title:  "Hack the Box - Blue"
 date:   2016-09-14 15:07:19
-categories: [walkthrough]
+categories: [walkthrough, htb]
 comments: false
 ---
 ![HTB-Blue](/img/htb/blue/blue/png)
