@@ -7,7 +7,7 @@ comments: false
 ---
 ![HTB-Bankrobber](/img/htb/bankrobber.png)
 
-An hard box by  Gioo & Cneeliz.  One of my favorites to date.  A really, REALLY cool initial exploitation method on this one and a painful but rewarding shell experience.  The privesc was fun, although it did feel a bit CTF.   That being said this is a great box for OSWE preparation!  
+An insane box by Gioo & Cneeliz.  One of my favorites to date.  A really, REALLY cool initial exploitation method on this one and a painful but rewarding shell experience.  The privesc was fun, although it did feel a bit CTF.   That being said this is a great box for OSWE preparation!  
 
 As this box is still active the walkthrough is not available.
 
