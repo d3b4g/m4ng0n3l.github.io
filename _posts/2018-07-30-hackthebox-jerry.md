@@ -21,7 +21,7 @@ meterpreter >
 
 <!--more-->
 
-## Discovery
+## Discovery/Enumeration
 
 Recently I discovered a pretty cool tool for discovery called `RECONNOITRE`.  I had been using Sparta in the past but I really liked how this one ran in the command line and saved its findings automatically.  
 
@@ -76,6 +76,8 @@ Browsing to http://10.10.10.95:8080/ we are greeted by Apache Tomcat, oh how I l
 By default old version of tomcat use `tomcat:s3cret` to authenticate.  There are a couple other defaults out there as well depending on the versions.  lets try those and see if that gives us access.
 
 ![HTB-jerry](/img/htb/jerry/tomcat-login.png)
+
+## Exploitation
 
 Awesome, and we have the opportunity to upload our own WAR file.  This should make for an easy shell.  To create the malicious payload we can use msfvenom:
 
@@ -137,7 +139,7 @@ meterpreter >
 
 Oh nice, immediatly system, no privesc for us.
 
-
+## Loot!
 
 {% highlight bash %}
 meterpreter > shell
