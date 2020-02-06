@@ -9,6 +9,14 @@ comments: false
 
 An easy box by ch4p.  Great for getting to know metasploit, or practice if you want to find and modify the exploit from exploit-db.com.
 
+{% highlight bash %}
+C:\Windows\System32>whoami	        
+nt authority\system
+
+C:\Windows\System32>hostname
+haris-PC
+{% endhighlight %}
+
 <!--more-->
 ## Host Discovery
 
